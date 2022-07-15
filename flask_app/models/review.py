@@ -100,6 +100,9 @@ class Review:
         if len(review['title']) < 2:
             flash("The Title must be at least 2 characters.", "danger")
             is_valid = False
+        if len(review['rating']) < 1:
+            flash("The rating must be a number between 1 and 5; with 5 being the highest rating.", "danger")
+            is_valid = False
         if review['date_watched'] == '':
             flash("Please enter a date.", "danger")
             is_valid = False
