@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <title>DOCUMENT</title>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+                <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
+        </head>
+        <body>
+            <!-- Error message section -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="container">
+                    <div class=flashes>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endwith %}
+            <!-- End error message section -->
+            <div class="wrapper">
+                <h1>Welcome</h1>
+                <!-- Nav -->
+                <div class="nav">
+                    <a href="#">back</a>
+                    <a href="/logout">Logout</a>
+                </div>
+                <div class="main">
+                    <!-- Left container -->
+                    <div class="container main-l">
+                        <h2>left container</h2>
+                    </div>
+                    <!-- Right container -->
+                    <div class="container main-r">
+                        <h2>right container</h2>
+                    </div>
+                </div>
+            </div>
+        
+        </body>
+</html>

@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: navajowhite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* login specific */
+.container-user {
+    width: 400px;
+    background-color: white;
+    padding: 20px;
+    margin: 30px;
+    border-radius: 15px;
+}
+
+.dashboard {
+    width: 800px;
+}
+
+.dash-nav {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-dash {
+    margin: 4px;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+}
+
+.form_create {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.btn-home {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* end login spec */
+
+.container {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+}
+
+.wrapper {
+    width: 900px;
+    margin: 10px;
+}
+
+.nav {
+    margin: 4px;
+    justify-content: flex-end;
+}
+
+.main {
+    display: flex;
+    width: 800px;
+    flex-direction: row;
+}
+
+.link {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}
+
+h1 {
+    color: royalblue;
+}
+
+h3 {
+    color: green;
+}
+
+a {
+    margin: 5px;
+}
+
+label {
+    margin: 5px;
+}
+
+input {
+    margin: 5px;
+}
+
+button {
+    padding: 4px;
+}
+
+td {
+    padding: 10px;
+    font-weight: bold;
+}
