@@ -29,8 +29,17 @@
                         <td>{{ one_review.date_watched.strftime('%Y-%m-%d') }}</td>
                     </tr>
                     <tr>
+                    <tr>
                         <td>content:</td>
                         <td>{{ one_review.content }}</td>
+                    </tr>
+                    <tr>
+                        <td>Users who favorited:</td>
+                        <td>
+                            {% for user_who_favorited in one_review.users_who_favorited %}
+                            <p>{{ user_who_favorited.first_name }} {{ user_who_favorited.last_name }}</p> 
+                            {% endfor %}
+                        </td>
                     </tr>
                 </table>
             </div>

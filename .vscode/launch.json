@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Attach by Process",
+            "request": "attach",
+            "type": "node",
+            "port": 5001
+        },
+        
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "server.py",
+                "FLASK_ENV": "development",
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--port=5001"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        }
+    ]
+}

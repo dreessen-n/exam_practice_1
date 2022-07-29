@@ -29,7 +29,11 @@ def create_new_review():
     review.Review.create_review(data)
     return redirect('/dashboard')
 
-# CRUD READ ROUTES
+@app.route('/review/favorite', methods=['POST'])
+def add_favorite_review():
+    review.Review.favorite(request.form)
+    return redirect('/dashboard')
+
 @app.route('/review/new')
 def review_new():
     """Display the form to create a new review"""
@@ -43,6 +47,7 @@ def review_new():
     # Call classmethod in models
     return render_template('new.html', user=user.User.get_user_by_id(data))
 
+# CRUD READ ROUTES
 @app.route('/review/show/<int:review_id>')
 def review_show_one(review_id):
     """Show the review on a page"""
@@ -115,5 +120,10 @@ def delete_review(review_id):
     # Call classmethod in models
     review.Review.delete_review(data)
     # Redirect back to dashboard after deletion
+    return redirect('/dashboard')
+
+@app.route('/review/unfavorite', methods=['POST'])
+def un_favorite_review():
+    review.Review.unfavorite(request.form)
     return redirect('/dashboard')
 

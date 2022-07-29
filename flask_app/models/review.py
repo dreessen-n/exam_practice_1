@@ -33,6 +33,11 @@ class Review:
         query = "INSERT INTO reviews (title, rating, date_watched, content, user_id) VALUES (%(title)s, %(rating)s, %(date_watched)s, %(content)s, %(user_id)s);"
         return connectToMySQL(cls.db).query_db(query,data)
 
+    @classmethod
+    def favorite(cls,data):
+        query = "INSERT INTO favorited_reviews (user_id, review_id) VALUES (%(user_id)s, %(id)s);"
+        return connectToMySQL(cls.db).query_db(query,data)
+
     # CRUD READ METHODS -- Modified for many to many
     @classmethod
     def get_all_reviews(cls):
@@ -58,10 +63,13 @@ class Review:
             # Check to see if previous processed review, exist as current row
             num_of_review = len(all_reviews)
             # Check to see if we have reviews in list
+            # If num_of_review is > 0; then we have procesed a row/review
+            # already
             if num_of_review > 0:
                 # Check if last review equals current row
                 last_review = all_reviews[num_of_review-1]
                 if last_review.id == r['id']:
+                    print(last_review.title)
                     last_review.user_ids_who_favorited.append(r['users_who_favorited.id'])
                     last_review.users_who_favorited.append(user.User(users_who_favorited_data))
                     new_review = False
@@ -95,21 +103,55 @@ class Review:
     @classmethod
     def get_one_review(cls,data):
         """Get one review to display"""
-        query = "SELECT * FROM reviews LEFT JOIN users ON reviews.user_id = users.id WHERE reviews.id = %(id)s;"
+        query = '''SELECT * FROM reviews
+                JOIN users AS creators ON reviews.user_id = creators.id
+                LEFT JOIN favorited_reviews ON favorited_reviews.review_id = reviews.id
+                LEFT JOIN users AS users_who_favorited ON favorited_reviews.user_id = users_who_favorited.id WHERE reviews.id = %(id)s;'''
+        # query = "SELECT * FROM reviews LEFT JOIN users ON reviews.user_id = users.id WHERE reviews.id = %(id)s;"
         result = connectToMySQL(cls.db).query_db(query, data)
-        review = cls(result[0])
-        user_data = {
-            'id': result[0]['users.id'],
-            'first_name': result[0]['first_name'],
-            'last_name': result[0]['last_name'],
-            'email': result[0]['email'],
-            'password': result[0]['password'],
-            'created_at': result[0]['users.created_at'],
-            'updated_at': result[0]['users.updated_at']
-        }
-        one_user = user.User(user_data)
-        # Set user to creator in review
-        review.creator = one_user
+        # Now due to fav; we can get back multiple rows or no rows (if no fav)
+        # So we need to check for both conditions
+        # First condition no results; return False
+        if len(result) < 1:
+            return False
+        # Check if multiple rows (or fav)
+        # If one row then review so set to True to start
+        new_review = True
+        for r in result:
+            if new_review:
+                # If this is the first row
+                review = cls(result[0])
+                user_data = {
+                    'id': r['creators.id'],
+                    'first_name': r['first_name'],
+                    'last_name': r['last_name'],
+                    'email': r['email'],
+                    'password': r['password'],
+                    'created_at': r['creators.created_at'],
+                    'updated_at': r['creators.updated_at']
+                }
+                one_user = user.User(user_data)
+                # Set user to creator in review
+                review.creator = one_user
+                # Set new_review to False once we create 
+                new_review = False
+            # if fav data associate it with user
+            if r['users_who_favorited.id']:
+                users_who_favorited_data = {
+                    'id': r['users_who_favorited.id'],
+                    'first_name': r['users_who_favorited.first_name'],
+                    'last_name': r['users_who_favorited.last_name'],
+                    'email': r['users_who_favorited.email'],
+                    'password': r['users_who_favorited.password'],
+                    'created_at': r['users_who_favorited.created_at'],
+                    'updated_at': r['users_who_favorited.updated_at']
+                }
+                # Create instance of user who fav
+                users_who_favorited = user.User(users_who_favorited_data)
+                # Add user to users_who_favorited list
+                review.users_who_favorited.append(users_who_favorited)
+                # Add users_who_favorited id to user_ids_who_favorited list
+                review.user_ids_who_favorited.append(r['users_who_favorited.id'])
         return review
 
     # CRUD UPDATE METHODS
@@ -124,6 +166,11 @@ class Review:
     def delete_review(cls,data):
         """Delete review"""
         query = "DELETE FROM reviews WHERE id = %(id)s;"
+        return connectToMySQL(cls.db).query_db(query,data)
+
+    @classmethod
+    def unfavorite(cls,data):
+        query = "DELETE FROM favorited_reviews WHERE user_id=%(user_id)s AND review_id=%(id)s;"
         return connectToMySQL(cls.db).query_db(query,data)
 
     # FORM VALIDATION

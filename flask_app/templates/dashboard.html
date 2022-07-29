@@ -22,6 +22,7 @@
               <th scope="col">Title</th>
               <th scope="col">Rating</th>
               <th scope="col">Reviewer</th>
+              <th scopt="col">Favorite Count</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -30,20 +31,35 @@
             <tr>
                 <td>{{ r.title }}</td>
                 <td>{{ r.rating }}</td>
-                  <!-- NEED TO GET CREATORS NAME -->
-                  <td>{{ r.creator.first_name }}</td>
-              <td>
-                  <div class="link">
-                      <a class="btn btn-dash btn-warning" href="/review/show/{{ r.id  }}" role="button">view</a>
-                      {% if r.user_id == session.id %}
-                      <a class="btn btn-dash btn-success" href="/review/edit/{{r.id}}" role="button">edit</a>
-                      <form action="/review/delete/{{r.id}}" method="POST">
-                          <input type="hidden" name="id" value="{{r.id}}">
-                          <button type="submit" class="btn btn-dash btn-danger">delete</button>
-                      </form>
-                      {% endif %}
-                  </div>
-              </td>
+                <!-- NEED TO GET CREATORS NAME -->
+                <td>{{ r.creator.first_name }}</td>
+                <td>{{ r.user_ids_who_favorited | length }}
+                    {% if session.id in r.user_ids_who_favorited %}
+                    <form action="/review/unfavorite" method="POST">
+                        <input type="hidden" name="id" value="{{r.id}}">
+                        <input type="hidden" name="user_id" value="{{session['id']}}">
+                        <button type="submit" class="btn btn-dash btn-danger">Remove</button>
+                    </form>
+                    {% else %}
+                    <form action="/review/favorite" method="POST">
+                        <input type="hidden" name="id" value="{{r.id}}">
+                        <input type="hidden" name="user_id" value="{{session['id']}}">
+                        <button type="submit" class="btn btn-dash btn-success">Add</button>
+                    </form>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="link">
+                        <a class="btn btn-dash btn-warning" href="/review/show/{{ r.id  }}" role="button">view</a>
+                        {% if r.user_id == session.id %}
+                        <a class="btn btn-dash btn-success" href="/review/edit/{{r.id}}" role="button">edit</a>
+                        <form action="/review/delete/{{r.id}}" method="POST">
+                            <input type="hidden" name="id" value="{{r.id}}">
+                            <button type="submit" class="btn btn-dash btn-danger">delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
             </tr>
             {% endfor %}
           </tbody>
